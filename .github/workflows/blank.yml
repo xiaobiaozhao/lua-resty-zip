@@ -31,9 +31,14 @@ jobs:
           wget -O - -q https://openresty.org/package/pubkey.gpg | sudo apt-key add -
           echo "deb http://openresty.org/package/ubuntu $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/openresty.list 
           sudo apt-get update
-          sudo apt-get -y install openresty
+          sudo apt-get -y install cpanminus build-essential libncurses5-dev libreadline-dev libssl-dev perl openresty
+          sudo cpanm --notest Test::Nginx >build.log 2>&1 || (cat build.log && exit 1)
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+
+      - name: Run Test
+        run: |
+          prove -r t
